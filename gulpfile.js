@@ -1,5 +1,12 @@
 // generated on 2017-05-05 using generator-webapp 2.4.1
 const gulp = require('gulp');
+
+// const webpack = require('gulp-webpack');
+const babelify = require('babelify');
+const browserify = require('browserify');
+const source = require('vinyl-source-stream');
+
+
 const gulpLoadPlugins = require('gulp-load-plugins');
 const browserSync = require('browser-sync').create();
 const del = require('del');
@@ -21,20 +28,32 @@ gulp.task('styles', () => {
       includePaths: ['.']
     }).on('error', $.sass.logError))
     .pipe($.autoprefixer({browsers: ['> 1%', 'last 2 versions', 'Firefox ESR']}))
-    .pipe($.if(dev, $.sourcemaps.write()))
+    .pipe($.if(dev, $.sourcemaps.write('.')))
     .pipe(gulp.dest('.tmp/styles'))
     .pipe(reload({stream: true}));
 });
 
-gulp.task('scripts', () => {
-  return gulp.src('app/scripts/**/*.js')
-    .pipe($.plumber())
-    .pipe($.if(dev, $.sourcemaps.init()))
-    .pipe($.babel())
-    .pipe($.if(dev, $.sourcemaps.write('.')))
-    .pipe(gulp.dest('.tmp/scripts'))
-    .pipe(reload({stream: true}));
+// gulp.task('scripts', () => {
+//   return gulp.src('app/scripts/**/*.js')
+//     .pipe($.plumber())
+//     .pipe($.if(dev, $.sourcemaps.init()))
+//     .pipe($.babel())
+//     .pipe($.if(dev, $.sourcemaps.write('.')))
+//     .pipe(gulp.dest('.tmp/scripts'))
+//     .pipe(reload({stream: true}));
+// });
+
+gulp.task('scripts', function() {
+    browserify({
+      entries: 'app/scripts/main.js',
+      debug: true
+    })
+    .transform(babelify)
+    .bundle()
+    .pipe(source('main.js'))
+    .pipe(gulp.dest('.tmp/scripts'));
 });
+
 
 function lint(files) {
   return gulp.src(files)

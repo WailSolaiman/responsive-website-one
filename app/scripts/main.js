@@ -1,1 +1,3 @@
-console.log('\'Allo \'Allo!');
+import MenuIcon from './modules/MenuIcon';
+
+new MenuIcon();
