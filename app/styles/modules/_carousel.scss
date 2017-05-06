@@ -1,0 +1,8 @@
+#carousel {
+     @include media-breakpoint-down(md) {
+         img {
+             width: 100%;
+             height: 500px;
+         }
+     }
+}
